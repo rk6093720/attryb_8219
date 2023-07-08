@@ -50,9 +50,20 @@ const updatecar = async(req,res)=>{
         res.status(404).json({msg:"update car is not successfully"})
     }
 }
+const deletecar = async(req,res)=>{
+    const {id} = req.params;
+    try {
+        const deleteCar = await SecondHandCarModal.findByIdAndDelete(id);
+        res.status(200).json({msg:"delete car is  successfully", Success:true,deleteCar})   
+    } catch (error) {
+        console.log(error);
+        res.status(404).json({msg:"delete car is not successfully"})
+    }
+}
 module.exports={
     SecondHandCar,
     GetSecondHandCar,
     Details,
-    updatecar
+    updatecar,
+    deletecar
 }

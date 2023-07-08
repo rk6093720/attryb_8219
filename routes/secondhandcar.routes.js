@@ -1,5 +1,5 @@
 const {Router} = require("express");
-const { SecondHandCar,GetSecondHandCar,Details,updatecar} = require("../controller/secondhandcar.controller")
+const { SecondHandCar,GetSecondHandCar,Details,updatecar,deletecar} = require("../controller/secondhandcar.controller")
 require("dotenv").config();
 const secondhandcar = Router();
 //post method
@@ -10,6 +10,8 @@ secondhandcar.get("/secondhandcar", GetSecondHandCar);
 secondhandcar.get("/secondhandcar/:id", Details);
 //put method
 secondhandcar.put("/editsecondhandcar/:id", updatecar);
+//delete method
+secondhandcar.delete("/deletesecondhandcar/:id", deletecar);
 module.exports= {
 secondhandcar
 }
