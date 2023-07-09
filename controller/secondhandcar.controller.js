@@ -52,6 +52,7 @@ const updatecar = async(req,res)=>{
 }
 const deletecar = async(req,res)=>{
     const {id} = req.params;
+    // console.log(id);
     try {
         const deleteCar = await SecondHandCarModal.findByIdAndDelete(id);
         res.status(200).json({msg:"delete car is  successfully", Success:true,deleteCar})   
@@ -60,10 +61,61 @@ const deletecar = async(req,res)=>{
         res.status(404).json({msg:"delete car is not successfully"})
     }
 }
+const filterandsearchcar = async(req,res)=>{
+    try{
+    const { price,color, modelname ,sort} = req.query;
+    const query = {};
+    if (price) {
+        query.price = { $regex: price, $options: 'i'};
+        const [minPrice, maxPrice] = price.split('-');     
+    if (minPrice && maxPrice) {
+        query.price = { $gte: parseInt(minPrice), $lte: parseInt(maxPrice) };
+      } else if (minPrice) {
+        query.price = { $gte: parseInt(minPrice) };
+      } else if (maxPrice) {
+        query.price = { $lte: parseInt(maxPrice) };
+      }
+      }
+   
+  
+   if (color) {
+      query.color = { $regex: color, $options: 'i'};
+    }
+    if (modelname) {
+      query.modelname = { $regex: modelname, $options: 'i' };
+     
+    }
+    let sortOption = {};
+
+    if (sort === 'asc') {
+      sortOption = { price: 1 };
+    } else if (sort === 'desc') {
+      sortOption = { price: -1 };
+    }
+    console.log(query.price,sortOption);
+   const secondhandcar = await SecondHandCarModal.find(query).sort(sortOption);
+   if(secondhandcar.length === 0){
+    return res.status(404).json({ msg: 'car is not products found' });
+   }
+   const car = secondhandcar.map((item)=>({
+       modelname: item.modelname,
+       image: item.image,
+       milege: item.milege,
+       year: item.year,
+       price: item.price,
+       color: item.color,
+       description: item.description
+   }))
+    res.status(200).json({msg:"filter and search are successfully",car, Success:true});
+  } catch (error) {
+    res.status(500).json({msg:"filter and search are not successfully"});
+  }
+}
 module.exports={
     SecondHandCar,
     GetSecondHandCar,
     Details,
     updatecar,
-    deletecar
+    deletecar,
+    filterandsearchcar
 }

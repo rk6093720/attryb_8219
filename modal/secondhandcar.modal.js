@@ -10,6 +10,7 @@ const secondhandcar = new mongoose.Schema({
     description: { type: [String],required: true }
    
 })
+// secondhandcar.index({ price: 1 });
 
 const SecondHandCarModal = mongoose.model("SECONDHANDCAR", secondhandcar);
 
